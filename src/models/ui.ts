@@ -1,0 +1,1 @@
+export type CardRatio = '4x3' | '16x9' | '1x1';

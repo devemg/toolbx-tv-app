@@ -1,0 +1,13 @@
+.cardList {
+  & > h2 {
+    font-size: 2.3rem;
+  }
+
+  & > div {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,13 @@
+@use "./styles/index.scss";
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-size: larger;
+}
+
+.app-page {
+  padding: 1rem 2rem;
+}

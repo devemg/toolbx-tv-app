@@ -1,5 +1,4 @@
-import { ContentPage } from "@/pages/Content";
-import { UserPage } from "@/pages/User";
+import { NotFoundPage, ContentPage, UserPage } from "@/pages";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 
@@ -11,6 +10,10 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: <UserPage />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 

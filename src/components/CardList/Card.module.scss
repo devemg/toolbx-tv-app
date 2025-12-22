@@ -1,0 +1,86 @@
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+
+  & > h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 1rem 0;
+    width: 100%;
+    min-width: 0;
+    font-weight: normal;
+    font-size: 1.8rem;
+  }
+
+  & > img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .placeholderContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+
+    & > img {
+      opacity: 0.5;
+      width: auto;
+      height: auto;
+      max-width: 50%;
+      max-height: 50%;
+      object-fit: contain;
+    }
+  }
+}
+
+.progressBar {
+  position: relative;
+  height: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.293);
+  width: 100%;
+  border-radius: 0.25rem;
+  overflow: hidden;
+
+  span {
+    position: absolute;
+    height: 100%;
+    background-color: var(--color-primary);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+}
+
+.card-16x9 {
+  @extend .card;
+  width: 20vw;
+
+  & > img {
+    aspect-ratio: 16 / 9;
+    width: 20vw;
+  }
+
+  .placeholderContainer {
+    aspect-ratio: 16 / 9;
+    width: 20vw;
+  }
+}
+
+.card-4x3 {
+  @extend .card;
+  width: 25vw;
+
+  & > img {
+    aspect-ratio: 4 / 3;
+    width: 25vw;
+  }
+
+  .placeholderContainer {
+    aspect-ratio: 4 / 3;
+    width: 25vw;
+  }
+}
