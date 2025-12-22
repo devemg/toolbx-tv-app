@@ -1,31 +1,40 @@
 .header {
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
 }
 
 .logo {
-    width: 10vw;
-    height: auto;
+  width: 10vw;
+  height: auto;
 }
 
 .itemsList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 1rem;
-    font-size: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 1rem;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: auto;
 
-    li a {
-        text-decoration: none;
-        color: inherit;
-        transition: color 0.3s ease;
-        &:hover {
-            color: var(--color-primary);
-        }
+  li {
+    opacity: 0.8;
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.3s ease;
+      &:hover {
+        color: var(--color-primary);
+      }
     }
+  }
+}
+
+.active {
+  font-weight: bold;
+  opacity: 1 !important;
+  color: var(--color-primary);
 }

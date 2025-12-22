@@ -8,6 +8,10 @@ const router = createBrowserRouter([
     element: <ContentPage />,
   },
   {
+    path: "/:tab",
+    element: <ContentPage />,
+  },
+  {
     path: "/user",
     element: <UserPage />,
   },

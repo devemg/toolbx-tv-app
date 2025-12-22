@@ -2,12 +2,58 @@
   & > h2 {
     font-size: 2.3rem;
   }
+}
 
-  & > div {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    gap: 1rem;
+.cardsWrapper {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.cardsContainer {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 1rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  width: 50px;
+  height: 100px;
+  font-size: 3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  &:focus {
+    outline: 2px solid white;
+    outline-offset: -2px;
+  }
+}
+
+.arrowLeft {
+  left: 0;
+}
+
+.arrowRight {
+  right: 0;
 }

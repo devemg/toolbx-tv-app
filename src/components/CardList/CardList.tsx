@@ -1,30 +1,92 @@
-import type { IContent } from "@/models/content";
+import type { IContent, IContentList } from "@/models/content";
 import { Card } from "./Card";
 import styles from "./CardList.module.scss";
 import type { CardRatio } from "@/models/ui";
-import { memo } from "react";
+import { memo, useRef, useState, useEffect } from "react";
+import { useContent } from "@/contexts";
 
-interface CardListProps {
-  title: string;
-  contents: IContent[];
+interface CardListProps extends IContentList {
   ratio?: CardRatio;
   showProgress?: boolean;
 }
 
 export const CardList: React.FC<CardListProps> = memo(
   ({ title, contents, showProgress, ratio = "4x3" }) => {
+    const { setSelectedContent } = useContent();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [showArrows, setShowArrows] = useState(false);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const handleClick = (content: IContent) => {
+      setSelectedContent(content);
+    };
+
+    const checkScrollPosition = () => {
+      if (containerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
+      }
+    };
+
+    useEffect(() => {
+      checkScrollPosition();
+      const container = containerRef.current;
+      if (container) {
+        container.addEventListener("scroll", checkScrollPosition);
+        return () =>
+          container.removeEventListener("scroll", checkScrollPosition);
+      }
+    }, [contents]);
+
+    const scroll = (direction: "left" | "right") => {
+      if (containerRef.current) {
+        const scrollAmount = containerRef.current.clientWidth * 0.8;
+        containerRef.current.scrollBy({
+          left: direction === "left" ? -scrollAmount : scrollAmount,
+          behavior: "smooth",
+        });
+      }
+    };
+
     return (
-      <div className={styles.cardList}>
+      <div
+        className={styles.cardList}
+        onMouseEnter={() => setShowArrows(true)}
+        onMouseLeave={() => setShowArrows(false)}
+      >
         <h2>{title}</h2>
-        <div>
-          {contents.map((content) => (
-            <Card
-              key={content.id}
-              content={content}
-              showProgress={showProgress}
-              ratio={ratio}
-            />
-          ))}
+        <div className={styles.cardsWrapper}>
+          {showArrows && canScrollLeft && (
+            <button
+              className={`${styles.arrow} ${styles.arrowLeft}`}
+              onClick={() => scroll("left")}
+              aria-label="Scroll left"
+            >
+              ‹
+            </button>
+          )}
+          {showArrows && canScrollRight && (
+            <button
+              className={`${styles.arrow} ${styles.arrowRight}`}
+              onClick={() => scroll("right")}
+              aria-label="Scroll right"
+            >
+              ›
+            </button>
+          )}
+          <div ref={containerRef} className={styles.cardsContainer}>
+            {contents.map((content) => (
+              <Card
+                key={content.id}
+                content={content}
+                showProgress={showProgress}
+                ratio={ratio}
+                onClick={handleClick}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );

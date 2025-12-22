@@ -32,7 +32,7 @@ describe("Card Component", () => {
 
   describe("Progress bar", () => {
     it("should display 50% progress when currentViewTime is half of duration", () => {
-      const { container } = render(<Card content={mockContent} />);
+      const { container } = render(<Card content={mockContent} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "50%" });
     });
@@ -42,7 +42,7 @@ describe("Card Component", () => {
         ...mockContent,
         currentViewTime: 0,
       };
-      const { container } = render(<Card content={contentWithNoProgress} />);
+      const { container } = render(<Card content={contentWithNoProgress} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "0%" });
     });
@@ -52,7 +52,7 @@ describe("Card Component", () => {
         ...mockContent,
         currentViewTime: 8520,
       };
-      const { container } = render(<Card content={contentFullyWatched} />);
+      const { container } = render(<Card content={contentFullyWatched} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "100%" });
     });
@@ -62,7 +62,7 @@ describe("Card Component", () => {
         ...mockContent,
         duration: 0,
       };
-      const { container } = render(<Card content={contentNoDuration} />);
+      const { container } = render(<Card content={contentNoDuration} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "0%" });
     });
@@ -72,7 +72,7 @@ describe("Card Component", () => {
         ...mockContent,
         currentViewTime: undefined,
       };
-      const { container } = render(<Card content={contentNoProgress} />);
+      const { container } = render(<Card content={contentNoProgress} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "0%" });
     });
@@ -82,7 +82,7 @@ describe("Card Component", () => {
         ...mockContent,
         duration: undefined,
       };
-      const { container } = render(<Card content={contentNoDuration} />);
+      const { container } = render(<Card content={contentNoDuration} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "0%" });
     });
@@ -93,7 +93,7 @@ describe("Card Component", () => {
         currentViewTime: 2556, // 30%
         duration: 8520,
       };
-      const { container } = render(<Card content={contentPartialProgress} />);
+      const { container } = render(<Card content={contentPartialProgress} showProgress />);
       const progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "30%" });
     });
@@ -113,7 +113,7 @@ describe("Card Component", () => {
     });
 
     it("should re-render when content progress changes", () => {
-      const { rerender, container } = render(<Card content={mockContent} />);
+      const { rerender, container } = render(<Card content={mockContent} showProgress />);
       let progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "50%" });
 
@@ -121,7 +121,7 @@ describe("Card Component", () => {
         ...mockContent,
         currentViewTime: 6390, // 75%
       };
-      rerender(<Card content={updatedContent} />);
+      rerender(<Card content={updatedContent} showProgress />);
       progressSpan = container.querySelector("div > div > span");
       expect(progressSpan).toHaveStyle({ width: "75%" });
     });
@@ -146,6 +146,7 @@ describe("Card Component", () => {
       const noImageContent = {
         ...mockContent,
         backdrop_path: undefined,
+        poster_path: undefined,
       };
       render(<Card content={noImageContent} />);
       const image = screen.getByAltText("The Shawshank Redemption");
@@ -159,7 +160,7 @@ describe("Card Component", () => {
         currentViewTime: 10000,
         duration: 8520,
       };
-      const { container } = render(<Card content={overProgressContent} />);
+      const { container } = render(<Card content={overProgressContent} showProgress />);
       const progressSpan = container.querySelector(
         "div > div > span"
       ) as HTMLElement;

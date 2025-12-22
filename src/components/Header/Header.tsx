@@ -1,15 +1,18 @@
 import { Link } from "react-router";
 import styles from "./Header.module.scss";
 import logo from "@assets/my-tv-logo.svg";
+import { useContent } from "@/contexts";
+import type { IContentTab } from "@/models/content";
 
-const navItems = [
-  { to: "/home", label: "Home" },
-  { to: "/movies", label: "Movies" },
-  { to: "/series", label: "Series" },
-  { to: "/kids", label: "Kids" },
+const navItems: IContentTab[] = [
+  { to: "/home", name: "Home", id: "home" },
+  { to: "/movies", name: "Movies", id: "movies" },
+  { to: "/series", name: "Series", id: "series" },
+  { to: "/kids", name: "Kids", id: "kids" },
 ];
 
 export const Header = () => {
+  const { setSelectedTab, selectedTab } = useContent();
   return (
     <nav className={styles.header}>
       <Link to="/">
@@ -18,8 +21,17 @@ export const Header = () => {
 
       <ul className={styles.itemsList}>
         {navItems.map((item) => (
-          <li key={item.to}>
-            <Link to={item.to}>{item.label}</Link>
+          <li
+            key={item.id}
+            className={
+              selectedTab?.toLowerCase() === item.id.toLowerCase()
+                ? styles.active
+                : ""
+            }
+          >
+            <Link to={item.to} onClick={() => setSelectedTab(item)}>
+              {item.name}
+            </Link>
           </li>
         ))}
       </ul>

@@ -2,18 +2,25 @@ import { render, screen } from "@testing-library/react";
 import { CardList } from "@/components/CardList/CardList";
 import type { IContent } from "@/models/content";
 import { mockContentResponse } from "../data.mock";
+import { ContentProvider } from "@/contexts/content";
+
+const CardListWithProvider = (props: any) => (
+  <ContentProvider>
+    <CardList {...props} />
+  </ContentProvider>
+);
 
 describe("CardList Component", () => {
   const mockContents = mockContentResponse.results;
 
   describe("Rendering", () => {
     it("should render the title", () => {
-      render(<CardList title="Popular Movies" contents={mockContents} />);
+      render(<CardListWithProvider id="testid" title="Popular Movies" contents={mockContents} />);
       expect(screen.getByText("Popular Movies")).toBeInTheDocument();
     });
 
     it("should render all content cards", () => {
-      render(<CardList title="Popular Movies" contents={mockContents} />);
+      render(<CardListWithProvider id="testid" title="Popular Movies" contents={mockContents} />);
       expect(screen.getByText("The Shawshank Redemption")).toBeInTheDocument();
       expect(screen.getByText("The Dark Knight")).toBeInTheDocument();
       expect(screen.getByText("Breaking Bad")).toBeInTheDocument();
@@ -23,22 +30,22 @@ describe("CardList Component", () => {
   describe("Props passing", () => {
     it("should apply default 4x3 ratio to cards", () => {
       const { container } = render(
-        <CardList title="Movies" contents={mockContents} />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
       );
-      const firstCard = container.querySelector("div > div > div");
+      const firstCard = container.querySelector("div > div > div > div");
       expect((firstCard as HTMLElement).className).toMatch(/card-4x3/);
     });
 
     it("should apply 16x9 ratio when specified", () => {
       const { container } = render(
-        <CardList title="Movies" contents={mockContents} ratio="16x9" />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} ratio="16x9" />
       );
-      const firstCard = container.querySelector("div > div > div");
+      const firstCard = container.querySelector("div > div > div > div");
       expect((firstCard as HTMLElement).className).toMatch(/card-16x9/);
     });
 
     it("should render all images correctly", () => {
-      render(<CardList title="Movies" contents={mockContents} />);
+      render(<CardListWithProvider id="testid" title="Movies" contents={mockContents} />);
       const image1 = screen.getByAltText("The Shawshank Redemption");
       const image2 = screen.getByAltText("The Dark Knight");
       const image3 = screen.getByAltText("Breaking Bad");
@@ -61,11 +68,11 @@ describe("CardList Component", () => {
   describe("Memoization", () => {
     it("should not re-render when props remain the same", () => {
       const { rerender } = render(
-        <CardList title="Movies" contents={mockContents} />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
       );
       const firstRenderTitle = screen.getByText("Movies");
 
-      rerender(<CardList title="Movies" contents={mockContents} />);
+      rerender(<CardListWithProvider id="testid" title="Movies" contents={mockContents} />);
       const secondRenderTitle = screen.getByText("Movies");
 
       expect(firstRenderTitle).toBe(secondRenderTitle);
@@ -73,18 +80,18 @@ describe("CardList Component", () => {
 
     it("should re-render when title changes", () => {
       const { rerender } = render(
-        <CardList title="Movies" contents={mockContents} />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
       );
       expect(screen.getByText("Movies")).toBeInTheDocument();
 
-      rerender(<CardList title="TV Shows" contents={mockContents} />);
+      rerender(<CardListWithProvider id="testid" title="TV Shows" contents={mockContents} />);
       expect(screen.getByText("TV Shows")).toBeInTheDocument();
       expect(screen.queryByText("Movies")).not.toBeInTheDocument();
     });
 
     it("should re-render when contents change", () => {
       const { rerender } = render(
-        <CardList title="Movies" contents={mockContents} />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
       );
       expect(screen.getByText("The Shawshank Redemption")).toBeInTheDocument();
 
@@ -104,7 +111,7 @@ describe("CardList Component", () => {
         },
       ];
 
-      rerender(<CardList title="Movies" contents={newContents} />);
+      rerender(<CardListWithProvider id="testid" title="Movies" contents={newContents} />);
       expect(screen.getByText("Inception")).toBeInTheDocument();
       expect(
         screen.queryByText("The Shawshank Redemption")
@@ -115,14 +122,14 @@ describe("CardList Component", () => {
   describe("Edge cases", () => {
     it("should handle single content item", () => {
       const singleContent = [mockContents[0]];
-      render(<CardList title="Single Movie" contents={singleContent} />);
+      render(<CardListWithProvider id="testid" title="Single Movie" contents={singleContent} />);
       expect(screen.getByText("The Shawshank Redemption")).toBeInTheDocument();
     });
 
     it("should handle very long title", () => {
       const longTitle =
         "This is a very long title that might need special handling in the UI";
-      render(<CardList title={longTitle} contents={mockContents} />);
+      render(<CardListWithProvider id="testid" title={longTitle} contents={mockContents} />);
       expect(screen.getByText(longTitle)).toBeInTheDocument();
     });
 
@@ -138,12 +145,12 @@ describe("CardList Component", () => {
           release_date: new Date("2020-01-01"),
         },
       ];
-      render(<CardList title="Minimal" contents={minimalContent} />);
+      render(<CardListWithProvider id="testid" title="Minimal" contents={minimalContent} />);
       expect(screen.getByText("Minimal Movie")).toBeInTheDocument();
     });
 
     it("should maintain card order", () => {
-      render(<CardList title="Movies" contents={mockContents} />);
+      render(<CardListWithProvider id="testid" title="Movies" contents={mockContents} />);
       const titles = screen.getAllByRole("heading", { level: 2 });
 
       // First h2 is the CardList title
@@ -156,7 +163,7 @@ describe("CardList Component", () => {
 
     it("should handle showProgress prop", () => {
       const { container } = render(
-        <CardList title="Movies" contents={mockContents} showProgress={true} />
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} showProgress={true} />
       );
       // Progress bars should be rendered
       const progressBars = container.querySelectorAll("div > div > span");

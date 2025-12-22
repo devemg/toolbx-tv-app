@@ -1,5 +1,10 @@
 export type MediaType = "movie" | "tv";
 
+export interface IContentTab {
+  id: string;
+  name: string;
+  to: string;
+}
 export interface IContentGenre {
   id: string;
   name: string;
@@ -22,9 +27,23 @@ export interface IContent {
   genres?: IContentGenre[];
 }
 
+export interface IContentList {
+  id: string;
+  title: string;
+  showProgress?: boolean;
+  contents: IContent[];
+}
+
 export interface IContentResponse {
   page: number;
   results: IContent[];
   total_pages: number;
   total_results: number;
+}
+
+export interface IContentListResponse {
+  page: number;
+  results: IContentList[];
+  total_pages: number;
+  total_results: number;  
 }

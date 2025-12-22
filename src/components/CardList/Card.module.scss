@@ -13,12 +13,14 @@
     min-width: 0;
     font-weight: normal;
     font-size: 1.8rem;
+    cursor: pointer;
   }
 
   & > img {
     display: block;
     width: 100%;
     object-fit: cover;
+    cursor: pointer;
   }
 
   .placeholderContainer {
@@ -26,6 +28,7 @@
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 
     & > img {
       opacity: 0.5;

@@ -13,6 +13,8 @@ export default defineConfig({
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@models": path.resolve(__dirname, "./src/models"),
       "@assets": path.resolve(__dirname, "./src/assets"),
+      "@contexts": path.resolve(__dirname, "./src/contexts"),
+      "@queries": path.resolve(__dirname, "./src/queries"),
     },
   },
   plugins: [react()],

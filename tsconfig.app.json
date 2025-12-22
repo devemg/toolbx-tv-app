@@ -31,7 +31,9 @@
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
       "@models/*": ["src/models/*"],
-      "@assets/*": ["src/assets/*"]
+      "@assets/*": ["src/assets/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@queries/*": ["src/queries/*"]
     }
   },
   "include": ["src", "vitest.d.ts"]

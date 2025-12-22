@@ -1,11 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router";
 import { Header } from "@/components/Header/Header";
+import { ContentProvider } from "@/contexts";
 
 // Wrapper component to provide router context
 const HeaderWithRouter = () => (
   <BrowserRouter>
-    <Header />
+    <ContentProvider>
+        <Header />
+    </ContentProvider>
   </BrowserRouter>
 );
 
