@@ -34,8 +34,17 @@ export default defineConfig({
         "*.mock.{ts,tsx,js,jsx}",
         "src/**/*.d.ts",
         "src/**/index.{ts,tsx,js,jsx}",
+        // wrapper components
         "src/main.tsx",
-      ]
+        "src/App.tsx",
+        "src/router/app-router.tsx",
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 70,
+        branches: 70,
+        statements: 70,
+      },
     },
   },
 });

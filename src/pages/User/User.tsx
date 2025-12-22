@@ -1,10 +1,10 @@
 import { useRemoteBack } from "@/navigation";
 import styles from "./User.module.scss";
 import { useFocusable, FocusContext } from "@noriginmedia/norigin-spatial-navigation";
-import { useEffect } from "react";
+import { useEffect, memo } from "react";
 import { useNavigate } from "react-router";
 
-const BackButton = () => {
+const BackButton = memo(() => {
   const navigate = useNavigate();
   useRemoteBack(()=> {
     navigate("/");
@@ -25,7 +25,7 @@ const BackButton = () => {
       <span>Back to Home</span>
     </button>
   );
-};
+});
 
 export const UserPage = () => {
   const { ref, focusSelf, focusKey } = useFocusable();

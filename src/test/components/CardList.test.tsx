@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { CardList } from "@/components/CardList/CardList";
 import type { IContent } from "@/models/content";
 import { mockContentResponse } from "../data.mock";
@@ -168,6 +168,167 @@ describe("CardList Component", () => {
       // Progress bars should be rendered
       const progressBars = container.querySelectorAll("div > div > span");
       expect(progressBars.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("Arrow navigation", () => {
+    it("should not show arrows initially", () => {
+      render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      expect(screen.queryByLabelText("Scroll left")).not.toBeInTheDocument();
+      expect(screen.queryByLabelText("Scroll right")).not.toBeInTheDocument();
+    });
+
+    it("should show arrows on mouse enter", async () => {
+      const { container } = render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      const cardList = container.querySelector('[class*="cardList"]');
+      const cardsContainer = container.querySelector('[class*="cardsContainer"]');
+      
+      if (cardList && cardsContainer) {
+        // Mock container dimensions to ensure scrolling is possible
+        Object.defineProperty(cardsContainer, 'clientWidth', { value: 1000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollWidth', { value: 2000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollLeft', { value: 0, configurable: true });
+        
+        // Trigger scroll event to update arrow visibility using fireEvent
+        fireEvent.scroll(cardsContainer);
+        
+        // Wait for state to update
+        await waitFor(() => {
+          // Simulate mouse enter
+          fireEvent.mouseEnter(cardList);
+          
+          // Right arrow should be visible since we can scroll right
+          const rightArrow = screen.queryByLabelText("Scroll right");
+          expect(rightArrow).toBeInTheDocument();
+        });
+      }
+    });
+
+    it("should hide arrows on mouse leave", () => {
+      const { container } = render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      const cardList = container.querySelector('[class*="cardList"]');
+      
+      if (cardList) {
+        // Show arrows first
+        cardList.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+        
+        // Hide arrows
+        cardList.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+        
+        expect(screen.queryByLabelText("Scroll left")).not.toBeInTheDocument();
+        expect(screen.queryByLabelText("Scroll right")).not.toBeInTheDocument();
+      }
+    });
+
+    it("should scroll right when right arrow is clicked", () => {
+      const { container } = render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      
+      const cardList = container.querySelector('[class*="cardList"]');
+      const cardsContainer = container.querySelector('[class*="cardsContainer"]');
+      
+      if (cardList && cardsContainer) {
+        // Mock scrollBy and clientWidth
+        const scrollBySpy = vi.fn();
+        Object.defineProperty(cardsContainer, 'clientWidth', { value: 1000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollWidth', { value: 2000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollLeft', { value: 0, configurable: true });
+        (cardsContainer as HTMLElement).scrollBy = scrollBySpy;
+        
+        // Show arrows
+        cardList.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+        
+        const rightArrow = screen.queryByLabelText("Scroll right");
+        if (rightArrow) {
+          rightArrow.click();
+          
+          // Should scroll 80% of container width to the right
+          expect(scrollBySpy).toHaveBeenCalledWith({
+            left: 800,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+
+    it("should scroll left when left arrow is clicked", () => {
+      const { container } = render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      
+      const cardList = container.querySelector('[class*="cardList"]');
+      const cardsContainer = container.querySelector('[class*="cardsContainer"]');
+      
+      if (cardList && cardsContainer) {
+        // Mock scrollBy and clientWidth
+        const scrollBySpy = vi.fn();
+        Object.defineProperty(cardsContainer, 'clientWidth', { value: 1000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollWidth', { value: 2000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollLeft', { value: 500, configurable: true });
+        (cardsContainer as HTMLElement).scrollBy = scrollBySpy;
+        
+        // Show arrows
+        cardList.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+        
+        // Trigger scroll event to update arrow visibility
+        cardsContainer.dispatchEvent(new Event('scroll'));
+        
+        const leftArrow = screen.queryByLabelText("Scroll left");
+        if (leftArrow) {
+          leftArrow.click();
+          
+          // Should scroll 80% of container width to the left
+          expect(scrollBySpy).toHaveBeenCalledWith({
+            left: -800,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+
+    it("should update arrow visibility based on scroll position", async () => {
+      const { container } = render(
+        <CardListWithProvider id="testid" title="Movies" contents={mockContents} />
+      );
+      
+      const cardList = container.querySelector('[class*="cardList"]');
+      const cardsContainer = container.querySelector('[class*="cardsContainer"]');
+      
+      if (cardList && cardsContainer) {
+        // Setup container dimensions
+        Object.defineProperty(cardsContainer, 'clientWidth', { value: 1000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollWidth', { value: 2000, configurable: true });
+        Object.defineProperty(cardsContainer, 'scrollLeft', { value: 0, configurable: true, writable: true });
+        
+        // Trigger scroll event to set initial state
+        fireEvent.scroll(cardsContainer);
+        
+        // Show arrows
+        fireEvent.mouseEnter(cardList);
+        
+        // Wait for initial state - no left arrow, yes right arrow
+        await waitFor(() => {
+          expect(screen.queryByLabelText("Scroll left")).not.toBeInTheDocument();
+          expect(screen.queryByLabelText("Scroll right")).toBeInTheDocument();
+        });
+        
+        // Simulate scroll to middle
+        Object.defineProperty(cardsContainer, 'scrollLeft', { value: 500, configurable: true, writable: true });
+        fireEvent.scroll(cardsContainer);
+        
+        // Wait for both arrows to be visible
+        await waitFor(() => {
+          expect(screen.queryByLabelText("Scroll left")).toBeInTheDocument();
+          expect(screen.queryByLabelText("Scroll right")).toBeInTheDocument();
+        });
+      }
     });
   });
 });

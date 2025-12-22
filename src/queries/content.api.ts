@@ -1,7 +1,6 @@
-import type { IContent, IContentListResponse } from "@/models/content";
+import type { IContentListResponse } from "@/models/content";
 import {
   mockContentLists,
-  mockContentResponse,
   mockKidsContentLists,
   mockMoviesContentLists,
   mockSeriesContentLists,
@@ -21,11 +20,4 @@ export const getContentList = async (
     return Promise.resolve(mockKidsContentLists);
   }
   return Promise.resolve(mockContentLists);
-};
-
-export const getContentById = async (id: string): Promise<IContent | null> => {
-  // Simulate an API call to fetch content by ID
-  const content =
-    mockContentResponse.results.find((item) => item.id === id) || null;
-  return Promise.resolve(content);
 };

@@ -2,7 +2,7 @@ import type { IContent, IContentList } from "@/models/content";
 import { Card } from "./Card";
 import styles from "./CardList.module.scss";
 import type { CardRatio } from "@/models/ui";
-import { memo, useRef, useState, useEffect } from "react";
+import { memo, useRef, useState, useEffect, useCallback } from "react";
 import { useContent } from "@/contexts";
 import {
   FocusContext,
@@ -36,23 +36,23 @@ export const CardList: React.FC<CardListProps> = memo(
       }
     }, [hasFocusedChild, selectedContent, setSelectedContent]);
 
-    const handleClick = (content: IContent) => {
+    const handleClick = useCallback((content: IContent) => {
       lastContentRef.current = content;
       setSelectedContent(content);
-    };
+    }, [setSelectedContent]);
 
-    const handleFocus = (content: IContent) => {
+    const handleFocus = useCallback((content: IContent) => {
       lastContentRef.current = content;
       setSelectedContent(content);
-    };
+    }, [setSelectedContent]);
 
-    const checkScrollPosition = () => {
+    const checkScrollPosition = useCallback(() => {
       if (containerRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
         setCanScrollLeft(scrollLeft > 0);
         setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
       }
-    };
+    }, []);
 
     useEffect(() => {
       checkScrollPosition();
@@ -64,7 +64,7 @@ export const CardList: React.FC<CardListProps> = memo(
       }
     }, [contents]);
 
-    const scroll = (direction: "left" | "right") => {
+    const scroll = useCallback((direction: "left" | "right") => {
       if (containerRef.current) {
         const scrollAmount = containerRef.current.clientWidth * 0.8;
         containerRef.current.scrollBy({
@@ -72,7 +72,7 @@ export const CardList: React.FC<CardListProps> = memo(
           behavior: "smooth",
         });
       }
-    };
+    }, []);
 
     return (
       <FocusContext.Provider value={focusKey}>

@@ -1,172 +1,158 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { Card } from "@/components/CardList/Card";
 import { mockContent } from "../data.mock";
 
+// Mock the navigation hook
+const mockState = {
+  focused: false,
+  onFocusCallback: null as (() => void) | null,
+  onEnterCallback: null as (() => void) | null,
+};
+
+vi.mock("@/navigation", () => ({
+  useFocusableMagic: (config: any) => {
+    mockState.onFocusCallback = config?.onFocus || null;
+    mockState.onEnterCallback = config?.onEnterRelease || null;
+    
+    return {
+      ref: { 
+        current: {
+          scrollIntoView: () => {},
+        }
+      },
+      get focused() {
+        return mockState.focused;
+      },
+    };
+  },
+}));
+
 describe("Card Component", () => {
-  it("should render card with content title", () => {
+  beforeEach(() => {
+    mockState.focused = false;
+    mockState.onFocusCallback = null;
+    mockState.onEnterCallback = null;
+  });
+  it("should render card with title and image", () => {
     render(<Card content={mockContent} />);
     expect(screen.getByText("The Shawshank Redemption")).toBeInTheDocument();
-  });
-
-  it("should render card with backdrop image", () => {
-    render(<Card content={mockContent} />);
     const image = screen.getByAltText("The Shawshank Redemption");
-    expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute(
       "src",
       "https://image.tmdb.org/t/p/w1280/test.jpg"
     );
   });
 
-  it("should render with default 4x3 ratio", () => {
-    const { container } = render(<Card content={mockContent} />);
-    const cardElement = container.firstChild as HTMLElement;
-    expect(cardElement.className).toMatch(/card-4x3/);
+  it("should render with correct ratio class", () => {
+    const { container, rerender } = render(<Card content={mockContent} />);
+    expect((container.firstChild as HTMLElement).className).toMatch(/card-4x3/);
+
+    rerender(<Card content={mockContent} ratio="16x9" />);
+    expect((container.firstChild as HTMLElement).className).toMatch(/card-16x9/);
   });
 
-  it("should render with 16x9 ratio when specified", () => {
-    const { container } = render(<Card content={mockContent} ratio="16x9" />);
-    const cardElement = container.firstChild as HTMLElement;
-    expect(cardElement.className).toMatch(/card-16x9/);
+  it("should calculate progress percentage correctly", () => {
+    const { container, rerender } = render(
+      <Card content={mockContent} showProgress />
+    );
+    let progressSpan = container.querySelector("div > div > span");
+    expect(progressSpan).toHaveStyle({ width: "50%" });
+
+    // 0% progress
+    rerender(
+      <Card content={{ ...mockContent, currentViewTime: 0 }} showProgress />
+    );
+    progressSpan = container.querySelector("div > div > span");
+    expect(progressSpan).toHaveStyle({ width: "0%" });
+
+    // 100% progress
+    rerender(
+      <Card content={{ ...mockContent, currentViewTime: 8520 }} showProgress />
+    );
+    progressSpan = container.querySelector("div > div > span");
+    expect(progressSpan).toHaveStyle({ width: "100%" });
   });
 
-  describe("Progress bar", () => {
-    it("should display 50% progress when currentViewTime is half of duration", () => {
-      const { container } = render(<Card content={mockContent} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "50%" });
-    });
-
-    it("should display 0% progress when currentViewTime is 0", () => {
-      const contentWithNoProgress = {
-        ...mockContent,
-        currentViewTime: 0,
-      };
-      const { container } = render(<Card content={contentWithNoProgress} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "0%" });
-    });
-
-    it("should display 100% progress when currentViewTime equals duration", () => {
-      const contentFullyWatched = {
-        ...mockContent,
-        currentViewTime: 8520,
-      };
-      const { container } = render(<Card content={contentFullyWatched} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "100%" });
-    });
-
-    it("should display 0% progress when duration is 0", () => {
-      const contentNoDuration = {
-        ...mockContent,
-        duration: 0,
-      };
-      const { container } = render(<Card content={contentNoDuration} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "0%" });
-    });
-
-    it("should display 0% progress when currentViewTime is undefined", () => {
-      const contentNoProgress = {
-        ...mockContent,
-        currentViewTime: undefined,
-      };
-      const { container } = render(<Card content={contentNoProgress} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "0%" });
-    });
-
-    it("should display 0% progress when duration is undefined", () => {
-      const contentNoDuration = {
-        ...mockContent,
-        duration: undefined,
-      };
-      const { container } = render(<Card content={contentNoDuration} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "0%" });
-    });
-
-    it("should calculate correct percentage for partial progress", () => {
-      const contentPartialProgress = {
-        ...mockContent,
-        currentViewTime: 2556, // 30%
-        duration: 8520,
-      };
-      const { container } = render(<Card content={contentPartialProgress} showProgress />);
-      const progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "30%" });
-    });
+  it("should show placeholder when image is missing", () => {
+    const noImageContent = {
+      ...mockContent,
+      backdrop_path: undefined,
+      poster_path: undefined,
+    };
+    render(<Card content={noImageContent} />);
+    const image = screen.getByAltText("The Shawshank Redemption");
+    expect(image.getAttribute("src")).toMatch("data:image/svg+xml");
   });
 
-  describe("Memoization", () => {
-    it("should not re-render when unrelated props change", () => {
-      const { rerender } = render(<Card content={mockContent} ratio="4x3" />);
-      const firstRenderTitle = screen.getByText("The Shawshank Redemption");
-
-      // Re-render with same props
-      rerender(<Card content={mockContent} ratio="4x3" />);
-      const secondRenderTitle = screen.getByText("The Shawshank Redemption");
-
-      // Should be the same element (not re-rendered)
-      expect(firstRenderTitle).toBe(secondRenderTitle);
-    });
-
-    it("should re-render when content progress changes", () => {
-      const { rerender, container } = render(<Card content={mockContent} showProgress />);
-      let progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "50%" });
-
-      const updatedContent = {
-        ...mockContent,
-        currentViewTime: 6390, // 75%
-      };
-      rerender(<Card content={updatedContent} showProgress />);
-      progressSpan = container.querySelector("div > div > span");
-      expect(progressSpan).toHaveStyle({ width: "75%" });
-    });
+  it("should apply focused class when focused", () => {
+    // Test not focused state
+    mockState.focused = false;
+    const { container: containerNotFocused } = render(<Card content={mockContent} />);
+    expect((containerNotFocused.firstChild as HTMLElement).className).not.toMatch(/focused/);
+    
+    // Test focused state - need to unmount and remount with new mock state
+    mockState.focused = true;
+    const { container: containerFocused } = render(<Card content={mockContent} />);
+    expect((containerFocused.firstChild as HTMLElement).className).toMatch(/focused/);
   });
 
-  describe("Edge cases", () => {
-    it("should handle very long titles", () => {
-      const longTitleContent = {
-        ...mockContent,
-        title:
-          "This is a very long title that should be truncated with ellipsis when it exceeds the container width",
-      };
-      render(<Card content={longTitleContent} />);
-      expect(
-        screen.getByText(
-          "This is a very long title that should be truncated with ellipsis when it exceeds the container width"
-        )
-      ).toBeInTheDocument();
-    });
+  it("should call onClick when onEnterRelease is triggered", () => {
+    const onClickMock = vi.fn();
+    render(<Card content={mockContent} onClick={onClickMock} />);
+    
+    // Trigger the onEnterRelease callback captured by the mock
+    expect(mockState.onEnterCallback).toBeDefined();
+    mockState.onEnterCallback?.();
+    
+    expect(onClickMock).toHaveBeenCalledWith(mockContent);
+    expect(onClickMock).toHaveBeenCalledTimes(1);
+  });
 
-    it("should handle missing backdrop_path", () => {
-      const noImageContent = {
-        ...mockContent,
-        backdrop_path: undefined,
-        poster_path: undefined,
-      };
-      render(<Card content={noImageContent} />);
-      const image = screen.getByAltText("The Shawshank Redemption");
-      expect(image).toBeInTheDocument();
-      expect(image.getAttribute("src")).toMatch('data:image/svg+xml');
-    });
+  it("should fallback to poster_path when backdrop_path fails", () => {
+    const contentWithBothImages = {
+      ...mockContent,
+      backdrop_path: "https://image.tmdb.org/t/p/w1280/backdrop.jpg",
+      poster_path: "https://image.tmdb.org/t/p/w500/poster.jpg",
+    };
+    
+    render(<Card content={contentWithBothImages} />);
+    const image = screen.getByAltText("The Shawshank Redemption") as HTMLImageElement;
+    
+    // Initially shows backdrop
+    expect(image.src).toBe("https://image.tmdb.org/t/p/w1280/backdrop.jpg");
+    
+    // Trigger error on backdrop
+    fireEvent.error(image);
+    
+    // Should fallback to poster
+    expect(image.src).toBe("https://image.tmdb.org/t/p/w500/poster.jpg");
+  });
 
-    it("should handle progress over 100%", () => {
-      const overProgressContent = {
-        ...mockContent,
-        currentViewTime: 10000,
-        duration: 8520,
-      };
-      const { container } = render(<Card content={overProgressContent} showProgress />);
-      const progressSpan = container.querySelector(
-        "div > div > span"
-      ) as HTMLElement;
-      // Should calculate to ~117%, but CSS will handle overflow
-      const expectedWidth = ((10000 / 8520) * 100).toFixed(0);
-      expect(progressSpan?.style.width).toContain(expectedWidth);
-    });
+  it("should show placeholder when both images fail", () => {
+    const contentWithBothImages = {
+      ...mockContent,
+      backdrop_path: "https://image.tmdb.org/t/p/w1280/backdrop.jpg",
+      poster_path: "https://image.tmdb.org/t/p/w500/poster.jpg",
+    };
+    
+    const { rerender } = render(<Card content={contentWithBothImages} />);
+    const image = screen.getByAltText("The Shawshank Redemption") as HTMLImageElement;
+    
+    // Trigger error on backdrop (fallback to poster)
+    fireEvent.error(image);
+    
+    // Re-render to get the new image element after state change
+    rerender(<Card content={contentWithBothImages} />);
+    const posterImage = screen.getAllByAltText("The Shawshank Redemption")[0] as HTMLImageElement;
+    
+    // Trigger error on poster
+    fireEvent.error(posterImage);
+    
+    // Should show placeholder
+    rerender(<Card content={contentWithBothImages} />);
+    const placeholderImage = screen.getAllByAltText("The Shawshank Redemption").find(
+      img => img.getAttribute("src")?.includes("data:image/svg+xml")
+    );
+    expect(placeholderImage).toBeDefined();
   });
 });

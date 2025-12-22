@@ -3,6 +3,7 @@ import styles from "./Header.module.scss";
 import logo from "@assets/my-tv-logo.svg";
 import { useContent } from "@/contexts";
 import type { IContentTab } from "@/models/content";
+import { memo } from "react";
 import {
   FocusContext,
   useFocusable,
@@ -17,7 +18,7 @@ const navItems: IContentTab[] = [
   { to: "/kids", name: "Kids", id: "kids" },
 ];
 
-const HeaderLink = ({
+const HeaderLink = memo(({
   item,
   selectedTab,
 }: {
@@ -45,9 +46,9 @@ const HeaderLink = ({
       </Link>
     </li>
   );
-};
+});
 
-const Logo = () => {
+const Logo = memo(() => {
   const { ref, focused } = useFocusableMagic({
     onEnterRelease: () => {
       ref.current?.click();
@@ -59,7 +60,7 @@ const Logo = () => {
       <img src={logo} alt="App Logo" className={styles.logo} />
     </Link>
   );
-};
+});
 
 export const Header = () => {
   const { selectedTab } = useContent();

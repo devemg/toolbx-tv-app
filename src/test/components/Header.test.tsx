@@ -3,6 +3,15 @@ import { BrowserRouter } from "react-router";
 import { Header } from "@/components/Header/Header";
 import { ContentProvider } from "@/contexts";
 
+// Mock navigation hooks
+vi.mock("@/navigation", () => ({
+  useFocusableMagic: () => ({
+    ref: { current: null },
+    focused: false,
+    focusKey: "test-focus-key",
+  }),
+}));
+
 // Wrapper component to provide router context
 const HeaderWithRouter = () => (
   <BrowserRouter>

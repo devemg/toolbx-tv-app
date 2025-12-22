@@ -1,6 +1,6 @@
 import { CardList, ContentDescription, Header } from "@/components";
 import styles from "./Content.module.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router";
 import { useContent } from "@/contexts";
 import { getContentList } from "@/queries/content.api";
@@ -30,7 +30,7 @@ export const ContentPage = () => {
     setContent(params.tab);
   }, [params.tab]);
 
-  const setContent = async (tab: string = "home") => {
+  const setContent = useCallback(async (tab: string = "home") => {
     try {
       const content = await getContentList(tab);
       setContentList(content);
@@ -38,7 +38,7 @@ export const ContentPage = () => {
     } catch (error) {
       console.error("Error setting content:", error);
     }
-  };
+  }, [setContentList, setSelectedTab]);
 
   return (
     <div className="app-page">
