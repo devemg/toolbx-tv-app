@@ -1,0 +1,3 @@
+export const MENU_FOCUS_KEY = 'MENU';
+export const CONTENT_LIST_FOCUS_KEY = 'CONTENT_LIST';
+export const APP_CONTENT_FOCUS_KEY = 'APP_CONTENT';

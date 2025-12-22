@@ -1,9 +1,11 @@
 .pageView {
     display: flex;
     gap: 2rem;
+    transition: all 0.4s ease-out;
 }
 
 .cardLists {
     flex: 2;
     overflow: hidden;
+    transition: flex 0.4s ease-out;
 }

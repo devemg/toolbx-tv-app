@@ -1,3 +1,4 @@
+import { App } from "@/App";
 import { NotFoundPage, ContentPage, UserPage } from "@/pages";
 import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
@@ -5,19 +6,25 @@ import { RouterProvider } from "react-router/dom";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ContentPage />,
-  },
-  {
-    path: "/:tab",
-    element: <ContentPage />,
-  },
-  {
-    path: "/user",
-    element: <UserPage />,
-  },
-  {
-    path: "*",
-    element: <NotFoundPage />,
+    element: <App />,
+    children: [
+      {
+        path: "/",
+        element: <ContentPage />,
+      },
+      {
+        path: "/:tab",
+        element: <ContentPage />,
+      },
+      {
+        path: "/user",
+        element: <UserPage />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
+      },
+    ],
   },
 ]);
 

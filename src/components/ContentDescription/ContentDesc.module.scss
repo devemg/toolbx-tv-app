@@ -6,6 +6,7 @@
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
+  animation: slideInFromRight 0.4s ease-out forwards;
 
   & > img {
     width: 100%;
@@ -41,6 +42,36 @@
       line-height: 1.5;
     }
   }
+}
+
+@keyframes slideInFromRight {
+  from {
+    width: 0;
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    width: 100%;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    width: 0;
+    opacity: 0;
+    transform: translateX(50px);
+  }
+}
+
+.content.exiting {
+  animation: slideOutToRight 0.3s ease-in forwards;
 }
 
 .pillContainer {

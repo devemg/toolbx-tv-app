@@ -3,15 +3,25 @@ import styles from "./Card.module.scss";
 import type { CardRatio } from "@/models/ui";
 import { useMemo, memo, useState } from "react";
 import placeholderImage from "@/assets/my-tv-logo.svg";
+import { useFocusable } from "@noriginmedia/norigin-spatial-navigation";
 
 interface CardProps {
   content: IContent;
   ratio?: CardRatio;
   showProgress?: boolean;
   onClick?: (content: IContent) => void;
+  onFocus?: (content: IContent) => void;
 }
 export const Card: React.FC<CardProps> = memo(
-  ({ content, showProgress, ratio = "4x3", onClick }) => {
+  ({ content, showProgress, ratio = "4x3", onClick, onFocus }) => {
+    const { ref, focused } = useFocusable({
+      onFocus: () => {
+        ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        if (onFocus) {
+          onFocus(content);
+        }
+      },
+    });
     const [imageUrl, setImageUrl] = useState(
       content.backdrop_path ?? content.poster_path
     );
@@ -27,7 +37,12 @@ export const Card: React.FC<CardProps> = memo(
     }, [content.currentViewTime, content.duration]);
 
     return (
-      <div className={`${styles[`card-${ratio}`]}`}>
+      <div
+        ref={ref}
+        className={`${styles[`card-${ratio}`]} ${
+          focused ? styles.focused : ""
+        }`}
+      >
         {imageUrl ? (
           <img
             src={imageUrl}

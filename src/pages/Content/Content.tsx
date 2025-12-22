@@ -1,6 +1,6 @@
 import { CardList, ContentDescription, Header } from "@/components";
 import styles from "./Content.module.scss";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useContent } from "@/contexts";
 import { getContentList } from "@/queries/content.api";
@@ -8,6 +8,22 @@ import { getContentList } from "@/queries/content.api";
 export const ContentPage = () => {
   const params = useParams();
   const { contentList, setContentList, selectedContent } = useContent();
+  const [displayContent, setDisplayContent] = useState(selectedContent);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    if (selectedContent) {
+      setDisplayContent(selectedContent);
+      setIsExiting(false);
+    } else if (displayContent) {
+      setIsExiting(true);
+      const timer = setTimeout(() => {
+        setDisplayContent(null);
+        setIsExiting(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedContent]);
 
   useEffect(() => {
     setContent(params.tab);
@@ -31,7 +47,9 @@ export const ContentPage = () => {
             <CardList key={contentGroup.id} ratio="16x9" {...contentGroup} />
           ))}
         </div>
-        {selectedContent && <ContentDescription content={selectedContent} />}
+        {displayContent && (
+          <ContentDescription content={displayContent} isExiting={isExiting} />
+        )}
       </div>
     </div>
   );

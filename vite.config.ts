@@ -15,6 +15,7 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@contexts": path.resolve(__dirname, "./src/contexts"),
       "@queries": path.resolve(__dirname, "./src/queries"),
+      "@navigation": path.resolve(__dirname, "./src/navigation"),
     },
   },
   plugins: [react()],

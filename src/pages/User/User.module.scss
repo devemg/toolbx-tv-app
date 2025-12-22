@@ -1,0 +1,104 @@
+.userPage {
+  display: flex;
+  flex-direction: column;
+  min-height: 80vh;
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  color: var(--color-text-primary);
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover,
+  &.focused {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+  }
+
+  .arrow {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+}
+
+.profileCardContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileCard {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  border-radius: 2rem;
+  padding: 3rem;
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: bold;
+  color: white;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-primary);
+  }
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.8rem;
+
+  label {
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 150px;
+  }
+
+  span {
+    color: var(--color-text-primary);
+  }
+}

@@ -4,10 +4,11 @@ import type { IContent } from "@/models/content";
 
 interface ContentDescriptionProps {
   content?: IContent;
+  isExiting?: boolean;
 }
 
 export const ContentDescription: React.FC<ContentDescriptionProps> = memo(
-  ({ content }) => {
+  ({ content, isExiting = false }) => {
     const [imageUrl, setImageUrl] = useState(content?.poster_path);
 
     useEffect(() => {
@@ -15,7 +16,7 @@ export const ContentDescription: React.FC<ContentDescriptionProps> = memo(
     }, [content]);
 
     return (
-      <div className={styles.content}>
+      <div className={`${styles.content} ${isExiting ? styles.exiting : ''}`}>
         {imageUrl && (
           <img
             src={imageUrl}

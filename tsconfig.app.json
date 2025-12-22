@@ -33,7 +33,8 @@
       "@models/*": ["src/models/*"],
       "@assets/*": ["src/assets/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@queries/*": ["src/queries/*"]
+      "@queries/*": ["src/queries/*"],
+      "@navigation/*": ["src/navigation/*"]
     }
   },
   "include": ["src", "vitest.d.ts"]

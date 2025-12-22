@@ -29,7 +29,7 @@ describe("Header Component", () => {
     it("should render logo as a link to home", () => {
       render(<HeaderWithRouter />);
       const logoLink = screen.getByAltText("App Logo").closest("a");
-      expect(logoLink).toHaveAttribute("href", "/");
+      expect(logoLink).toHaveAttribute("href", "/user");
     });
 
     it("should render navigation items as links", () => {
@@ -51,8 +51,8 @@ describe("Header Component", () => {
       render(<HeaderWithRouter />);
       const links = screen.getAllByRole("link");
 
-      // First link is logo (to "/")
-      expect(links[0]).toHaveAttribute("href", "/");
+      // First link is logo (to "/user")
+      expect(links[0]).toHaveAttribute("href", "/user");
 
       // Remaining links are nav items
       expect(links[1]).toHaveTextContent("Home");

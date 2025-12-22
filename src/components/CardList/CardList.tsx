@@ -4,6 +4,11 @@ import styles from "./CardList.module.scss";
 import type { CardRatio } from "@/models/ui";
 import { memo, useRef, useState, useEffect } from "react";
 import { useContent } from "@/contexts";
+import {
+  FocusContext,
+  useFocusable,
+} from "@noriginmedia/norigin-spatial-navigation";
+import { CONTENT_LIST_FOCUS_KEY } from "@/navigation/keys";
 
 interface CardListProps extends IContentList {
   ratio?: CardRatio;
@@ -11,14 +16,21 @@ interface CardListProps extends IContentList {
 }
 
 export const CardList: React.FC<CardListProps> = memo(
-  ({ title, contents, showProgress, ratio = "4x3" }) => {
+  ({ title, contents, showProgress, ratio = "4x3", id }) => {
     const { setSelectedContent } = useContent();
+    const { ref, focusKey } = useFocusable({
+      focusKey: `${CONTENT_LIST_FOCUS_KEY}-${id}`,
+    });
     const containerRef = useRef<HTMLDivElement>(null);
     const [showArrows, setShowArrows] = useState(false);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
 
     const handleClick = (content: IContent) => {
+      setSelectedContent(content);
+    };
+
+    const handleFocus = (content: IContent) => {
       setSelectedContent(content);
     };
 
@@ -51,44 +63,47 @@ export const CardList: React.FC<CardListProps> = memo(
     };
 
     return (
-      <div
-        className={styles.cardList}
-        onMouseEnter={() => setShowArrows(true)}
-        onMouseLeave={() => setShowArrows(false)}
-      >
-        <h2>{title}</h2>
-        <div className={styles.cardsWrapper}>
-          {showArrows && canScrollLeft && (
-            <button
-              className={`${styles.arrow} ${styles.arrowLeft}`}
-              onClick={() => scroll("left")}
-              aria-label="Scroll left"
-            >
-              ‹
-            </button>
-          )}
-          {showArrows && canScrollRight && (
-            <button
-              className={`${styles.arrow} ${styles.arrowRight}`}
-              onClick={() => scroll("right")}
-              aria-label="Scroll right"
-            >
-              ›
-            </button>
-          )}
-          <div ref={containerRef} className={styles.cardsContainer}>
-            {contents.map((content) => (
-              <Card
-                key={content.id}
-                content={content}
-                showProgress={showProgress}
-                ratio={ratio}
-                onClick={handleClick}
-              />
-            ))}
+      <FocusContext.Provider value={focusKey}>
+        <div
+          className={styles.cardList}
+          onMouseEnter={() => setShowArrows(true)}
+          onMouseLeave={() => setShowArrows(false)}
+        >
+          <h2>{title}</h2>
+          <div className={styles.cardsWrapper} ref={ref}>
+            {showArrows && canScrollLeft && (
+              <button
+                className={`${styles.arrow} ${styles.arrowLeft}`}
+                onClick={() => scroll("left")}
+                aria-label="Scroll left"
+              >
+                ‹
+              </button>
+            )}
+            {showArrows && canScrollRight && (
+              <button
+                className={`${styles.arrow} ${styles.arrowRight}`}
+                onClick={() => scroll("right")}
+                aria-label="Scroll right"
+              >
+                ›
+              </button>
+            )}
+            <div ref={containerRef} className={styles.cardsContainer}>
+              {contents.map((content) => (
+                <Card
+                  key={content.id}
+                  content={content}
+                  showProgress={showProgress}
+                  ratio={ratio}
+                  onClick={handleClick}
+                  onFocus={handleFocus}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </FocusContext.Provider>
     );
   }
 );
