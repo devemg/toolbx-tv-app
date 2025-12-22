@@ -8,6 +8,7 @@ import {
   useFocusable,
 } from "@noriginmedia/norigin-spatial-navigation";
 import { MENU_FOCUS_KEY } from "@/navigation/keys";
+import { useFocusableMagic } from "@/navigation";
 
 const navItems: IContentTab[] = [
   { to: "/home", name: "Home", id: "home" },
@@ -19,17 +20,17 @@ const navItems: IContentTab[] = [
 const HeaderLink = ({
   item,
   selectedTab,
-  setSelectedTab,
 }: {
   item: IContentTab;
   selectedTab?: string;
-  setSelectedTab: (item: IContentTab) => void;
 }) => {
-  const { ref, focused } = useFocusable({
+  const { ref, focused } = useFocusableMagic({
+    focusKey: MENU_FOCUS_KEY + `-${item.id}`,
     onEnterRelease: () => {
       ref.current?.click();
     },
   });
+
   return (
     <li
       key={item.id}
@@ -39,7 +40,7 @@ const HeaderLink = ({
           : ""
       } ${focused ? styles.focused : ""}`}
     >
-      <Link to={item.to} onClick={() => setSelectedTab(item)} ref={ref}>
+      <Link to={item.to} ref={ref}>
         {item.name}
       </Link>
     </li>
@@ -47,11 +48,12 @@ const HeaderLink = ({
 };
 
 const Logo = () => {
-  const { ref, focused } = useFocusable({
+  const { ref, focused } = useFocusableMagic({
     onEnterRelease: () => {
       ref.current?.click();
     },
   });
+
   return (
     <Link to="/user" ref={ref} className={focused ? styles.logoFocused : ""}>
       <img src={logo} alt="App Logo" className={styles.logo} />
@@ -60,8 +62,11 @@ const Logo = () => {
 };
 
 export const Header = () => {
-  const { setSelectedTab, selectedTab } = useContent();
-  const { ref, focusKey } = useFocusable({ focusKey: MENU_FOCUS_KEY });
+  const { selectedTab } = useContent();
+  const { ref, focusKey } = useFocusable({
+    focusKey: MENU_FOCUS_KEY,
+    preferredChildFocusKey: MENU_FOCUS_KEY + `-${selectedTab?.toLowerCase()}`,
+  });
 
   return (
     <FocusContext.Provider value={focusKey}>
@@ -69,12 +74,7 @@ export const Header = () => {
         <Logo />
         <ul className={styles.itemsList}>
           {navItems.map((item) => (
-            <HeaderLink
-              key={item.id}
-              item={item}
-              selectedTab={selectedTab}
-              setSelectedTab={setSelectedTab}
-            />
+            <HeaderLink key={item.id} item={item} selectedTab={selectedTab} />
           ))}
         </ul>
       </nav>

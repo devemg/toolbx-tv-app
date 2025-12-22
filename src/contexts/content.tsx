@@ -24,7 +24,7 @@ interface ContentContextValue extends ContentContextState {
   setSelectedContent: (content: IContent | null) => void;
   setContentList: (contents: IContentListResponse) => void;
   setLoading: (loading: boolean) => void;
-  setSelectedTab: (tab: IContentTab | undefined) => void;
+  setSelectedTab: (tab: IContentTab | string | undefined) => void;
 }
 
 const ContentContext = createContext<ContentContextValue | undefined>(
@@ -50,8 +50,8 @@ export const ContentProvider: React.FC<ContentProviderProps> = ({
     setSelectedContent(null);
   }, []);
 
-  const setSelectedTab = useCallback((tab: IContentTab | undefined) => {
-    setSelectedTabState(tab?.id);
+  const setSelectedTab = useCallback((tab: IContentTab | string | undefined) => {
+    setSelectedTabState(typeof tab === "string" ? tab : tab?.id);
   }, []);
 
   const value = useMemo(

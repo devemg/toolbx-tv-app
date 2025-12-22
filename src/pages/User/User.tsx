@@ -1,3 +1,4 @@
+import { useRemoteBack } from "@/navigation";
 import styles from "./User.module.scss";
 import { useFocusable, FocusContext } from "@noriginmedia/norigin-spatial-navigation";
 import { useEffect } from "react";
@@ -5,6 +6,9 @@ import { useNavigate } from "react-router";
 
 const BackButton = () => {
   const navigate = useNavigate();
+  useRemoteBack(()=> {
+    navigate("/");
+  });
   const { ref, focused } = useFocusable({
     onEnterRelease: () => {
       navigate("/");

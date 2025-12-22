@@ -7,7 +7,8 @@ import { getContentList } from "@/queries/content.api";
 
 export const ContentPage = () => {
   const params = useParams();
-  const { contentList, setContentList, selectedContent } = useContent();
+  const { contentList, setContentList, selectedContent, setSelectedTab } =
+    useContent();
   const [displayContent, setDisplayContent] = useState(selectedContent);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -33,6 +34,7 @@ export const ContentPage = () => {
     try {
       const content = await getContentList(tab);
       setContentList(content);
+      setSelectedTab(tab);
     } catch (error) {
       console.error("Error setting content:", error);
     }

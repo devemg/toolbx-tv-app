@@ -9,7 +9,9 @@ interface AppProps {
 }
 
 export const App: React.FC<AppProps> = ({ }) => {
-  const { ref, focusSelf, focusKey } = useFocusable();
+  const { ref, focusSelf, focusKey } = useFocusable({
+    preferredChildFocusKey: "MENU_FOCUS_KEY",
+  });
 
   useEffect(() => {
     focusSelf();

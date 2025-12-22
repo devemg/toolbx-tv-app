@@ -3,7 +3,7 @@ import styles from "./Card.module.scss";
 import type { CardRatio } from "@/models/ui";
 import { useMemo, memo, useState } from "react";
 import placeholderImage from "@/assets/my-tv-logo.svg";
-import { useFocusable } from "@noriginmedia/norigin-spatial-navigation";
+import { useFocusableMagic } from "@/navigation";
 
 interface CardProps {
   content: IContent;
@@ -14,14 +14,18 @@ interface CardProps {
 }
 export const Card: React.FC<CardProps> = memo(
   ({ content, showProgress, ratio = "4x3", onClick, onFocus }) => {
-    const { ref, focused } = useFocusable({
+    const { ref, focused } = useFocusableMagic({
       onFocus: () => {
         ref.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (onFocus) {
           onFocus(content);
         }
       },
+      onEnterRelease: () => {
+        onClick && onClick(content);
+      },
     });
+
     const [imageUrl, setImageUrl] = useState(
       content.backdrop_path ?? content.poster_path
     );
@@ -56,13 +60,9 @@ export const Card: React.FC<CardProps> = memo(
               } else {
               }
             }}
-            onClick={() => onClick && onClick(content)}
           />
         ) : (
-          <div
-            className={styles.placeholderContainer}
-            onClick={() => onClick && onClick(content)}
-          >
+          <div className={styles.placeholderContainer}>
             <img
               className={styles.placeholder}
               src={placeholderImage}
@@ -70,7 +70,7 @@ export const Card: React.FC<CardProps> = memo(
             />
           </div>
         )}
-        <h2 onClick={() => onClick && onClick(content)}>{content.title}</h2>
+        <h2>{content.title}</h2>
         {showProgress && (
           <div className={styles.progressBar}>
             <span
