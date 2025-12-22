@@ -17,20 +17,32 @@ interface CardListProps extends IContentList {
 
 export const CardList: React.FC<CardListProps> = memo(
   ({ title, contents, showProgress, ratio = "4x3", id }) => {
-    const { setSelectedContent } = useContent();
-    const { ref, focusKey } = useFocusable({
+    const { setSelectedContent, selectedContent } = useContent();
+    const { ref, focusKey, hasFocusedChild } = useFocusable({
       focusKey: `${CONTENT_LIST_FOCUS_KEY}-${id}`,
+      trackChildren: true,
     });
     const containerRef = useRef<HTMLDivElement>(null);
+    const lastContentRef = useRef<IContent | null>(null);
     const [showArrows, setShowArrows] = useState(false);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
 
+    // Clear selected content only if it was set by this CardList when focus leaves
+    useEffect(() => {
+      if (!hasFocusedChild && selectedContent && lastContentRef.current === selectedContent) {
+        setSelectedContent(null);
+        lastContentRef.current = null;
+      }
+    }, [hasFocusedChild, selectedContent, setSelectedContent]);
+
     const handleClick = (content: IContent) => {
+      lastContentRef.current = content;
       setSelectedContent(content);
     };
 
     const handleFocus = (content: IContent) => {
+      lastContentRef.current = content;
       setSelectedContent(content);
     };
 

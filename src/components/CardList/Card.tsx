@@ -58,6 +58,7 @@ export const Card: React.FC<CardProps> = memo(
               ) {
                 setImageUrl(content.poster_path);
               } else {
+                setImageUrl("");
               }
             }}
           />
