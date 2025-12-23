@@ -1,0 +1,26 @@
+/*
+Base font-size for rem calculation
+
+For TV applications, it's recommended to use relative values to the screen size
+rather than fixed pixel values. This ensures proper scaling across different TV resolutions
+(HD, Full HD, 4K, 8K) and screen sizes.
+
+Using rem units allows us to:
+- Scale all UI elements proportionally by changing a single base value
+- Maintain consistent visual hierarchy across different screen sizes
+- Avoid having to rewrite every single property for each breakpoint
+- Ensure better readability and usability on large displays
+
+The base font-size is adjusted via media queries to scale the entire UI
+automatically for different resolutions.
+*/
+html {
+  font-size: 10px; // 1rem = 10px (base for smaller screens)
+}
+
+// Scale up rem for larger screens (Full HD and above)
+@media (min-width: 1920px) {
+  html {
+    font-size: 16px; // 1rem = 16px (optimal for Full HD TVs and larger)
+  }
+}

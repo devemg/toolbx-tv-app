@@ -31,21 +31,24 @@ export const ContentPage = () => {
     setContent(params.tab);
   }, [params.tab]);
 
-  const setContent = useCallback(async (tab: string = "home") => {
-    try {
-      setIsLoading(true);
-      const content = await getContentList(tab);
-      setContentList(content);
-      setSelectedTab(tab);
-    } catch (error) {
-      console.error("Error setting content:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setContentList, setSelectedTab]);
+  const setContent = useCallback(
+    async (tab: string = "home") => {
+      try {
+        setIsLoading(true);
+        const content = await getContentList(tab, 1, tab === "kids" ? 3 : 2);
+        setContentList(content);
+        setSelectedTab(tab);
+      } catch (error) {
+        console.error("Error setting content:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setContentList, setSelectedTab]
+  );
 
   return (
-    <div className="app-page">
+    <div className={styles.contentPage}>
       <Header />
       {isLoading ? (
         <div className="loading">
@@ -59,7 +62,10 @@ export const ContentPage = () => {
             ))}
           </div>
           {displayContent && (
-            <ContentDescription content={displayContent} isExiting={isExiting} />
+            <ContentDescription
+              content={displayContent}
+              isExiting={isExiting}
+            />
           )}
         </div>
       )}

@@ -24,7 +24,9 @@ const BackButton = memo(() => {
   return (
     <button
       ref={ref}
-      className={`btn primary-btn ${styles.backButton} ${focused ? "focused" : ""}`}
+      className={`btn primary-btn ${styles.backButton} ${
+        focused ? "focused" : ""
+      }`}
       onClick={() => navigate("/")}
     >
       <span className={styles.arrow}>←</span>
@@ -59,17 +61,16 @@ export const UserPage = () => {
   }, [focusSelf]);
 
   return (
-    <div className="app-page">
-      <FocusContext.Provider value={focusKey}>
-        <div className={styles.userPage} ref={ref}>
-          <header className={styles.header}>
-            <BackButton />
-          </header>
-          {isLoading ? (
-            <div className="loading">
-              <div className="spinner" aria-label="loading"></div>
-            </div>
-          ) : (
+    <FocusContext.Provider value={focusKey}>
+      <div className={styles.userPage} ref={ref}>
+        <header className={styles.header}>
+          <BackButton />
+        </header>
+        {isLoading ? (
+          <div className="loading">
+            <div className="spinner" aria-label="loading"></div>
+          </div>
+        ) : (
           <div className={styles.profileCardContainer}>
             <div className={styles.profileCard}>
               <div className={styles.avatar}>
@@ -98,9 +99,8 @@ export const UserPage = () => {
               </div>
             </div>
           </div>
-          )}
-        </div>
-      </FocusContext.Provider>
-    </div>
+        )}
+      </div>
+    </FocusContext.Provider>
   );
 };

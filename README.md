@@ -2,6 +2,12 @@
 
 A modern TV application built with React, TypeScript, and spatial navigation for seamless remote control experience.
 
+> **⚠️ Important Note About TV Device Deployment**  
+> This build has **not been tested on real TV devices** yet. The production build configuration required for compatibility with actual Smart TVs (Samsung Tizen, LG webOS, etc.) and the necessary platform-specific setup are **not included** in this project.
+>
+> If you're interested in reviewing a complete TV-ready implementation with proper build configuration, check out the vite.config and TypeScript configuration files of this project tested in **Samsung Tizen 5.5 (2019)**:  
+> 🔗 **https://github.com/devemg/tic-tac-toe-tv**
+
 ## Features
 
 - 🎮 **Spatial Navigation**: Full remote control support using `@noriginmedia/norigin-spatial-navigation`
