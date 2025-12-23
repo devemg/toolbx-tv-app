@@ -29,6 +29,24 @@ A modern TV application built with React, TypeScript, and spatial navigation for
 - Node.js (v18 or higher)
 - pnpm (recommended) or npm
 
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```bash
+# Copy the example environment file
+cp .env.example .env
+```
+
+**Environment Variables:**
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_APP_ENV=development
+```
+
+- `VITE_API_URL`: Backend API endpoint (default: http://localhost:3000/api)
+- `VITE_APP_ENV`: Application environment (development/production)
+
 ### Installation
 
 ```bash
@@ -53,6 +71,34 @@ pnpm test:coverage
 # Lint code
 pnpm lint
 ```
+
+### Docker Compose Setup
+
+Run the entire application stack (frontend + API backend) using Docker Compose:
+
+```bash
+# Build and start all services
+docker-compose up --build
+
+# Run in detached mode (background)
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild specific service
+docker-compose up --build api
+docker-compose up --build app
+```
+
+**Services:**
+- **API Backend**: http://localhost:3000
+- **Frontend App**: http://localhost:8080
+
+The frontend container automatically connects to the API backend service.
 
 ## Project Structure
 

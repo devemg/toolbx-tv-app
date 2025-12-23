@@ -28,8 +28,10 @@ vi.mock("@/contexts", () => ({
   }),
 }));
 
-vi.mock("@/queries/content.api", () => ({
-  getContentList: (...args: any[]) => mockGetContentList(...args),
+vi.mock("@/queries/api-client", () => ({
+  apiClient: {
+    get: (...args: any[]) => mockGetContentList(...args),
+  },
 }));
 
 vi.mock("@/components", () => ({
@@ -50,7 +52,7 @@ describe("ContentPage", () => {
     mockSetSelectedTab.mockClear();
     mockGetContentList.mockClear();
     mockUseParams.mockReturnValue({ tab: "home" });
-    mockGetContentList.mockResolvedValue(mockContentResponse);
+    mockGetContentList.mockResolvedValue({ data: mockContentResponse });
     mockState.selectedContent = null;
   });
 
@@ -64,7 +66,6 @@ describe("ContentPage", () => {
     expect(screen.getByTestId("header")).toBeInTheDocument();
   });
 
-
   it("should fetch content on mount with tab parameter", async () => {
     mockUseParams.mockReturnValue({ tab: "movies" });
 
@@ -75,7 +76,9 @@ describe("ContentPage", () => {
     );
 
     await waitFor(() => {
-      expect(mockGetContentList).toHaveBeenCalledWith("movies");
+      expect(mockGetContentList).toHaveBeenCalledWith("/content/movies", {
+        params: { page: 1, limit: 2 },
+      });
       expect(mockSetContentList).toHaveBeenCalledWith(mockContentResponse);
       expect(mockSetSelectedTab).toHaveBeenCalledWith("movies");
     });
@@ -91,7 +94,9 @@ describe("ContentPage", () => {
     );
 
     await waitFor(() => {
-      expect(mockGetContentList).toHaveBeenCalledWith("home");
+      expect(mockGetContentList).toHaveBeenCalledWith("/content/home", {
+        params: { page: 1, limit: 2 },
+      });
     });
   });
 
@@ -106,7 +111,9 @@ describe("ContentPage", () => {
   });
 
   it("should handle API errors gracefully", async () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     mockGetContentList.mockRejectedValue(new Error("API Error"));
 
     render(
@@ -125,7 +132,7 @@ describe("ContentPage", () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it("should display content description when selectedContent is set", () => {
+  it("should display content description when selectedContent is set", async () => {
     mockState.selectedContent = mockContentResponse.results[0];
 
     render(
@@ -133,6 +140,11 @@ describe("ContentPage", () => {
         <ContentPage />
       </BrowserRouter>
     );
+
+    // Wait for loading to disappear
+    await waitFor(() => {
+      expect(screen.queryByLabelText("loading")).not.toBeInTheDocument();
+    });
 
     const description = screen.getByTestId("content-description");
     expect(description).toBeInTheDocument();
@@ -148,6 +160,11 @@ describe("ContentPage", () => {
         <ContentPage />
       </BrowserRouter>
     );
+
+    // Wait for loading to disappear
+    await waitFor(() => {
+      expect(screen.queryByLabelText("loading")).not.toBeInTheDocument();
+    });
 
     // Content should be visible
     expect(screen.getByTestId("content-description")).toBeInTheDocument();
@@ -167,5 +184,4 @@ describe("ContentPage", () => {
       expect(description).toHaveAttribute("data-exiting", "true");
     });
   });
-
 });

@@ -1,109 +1,111 @@
-import type {
-  IContent,
-  IContentListResponse,
-  IContentResponse,
-} from "@/models/content";
+interface Genre {
+  id: string;
+  name: string;
+}
 
-export const mockContent: IContent = {
-  id: "tt0111161",
-  media_type: "movie",
-  title: "The Shawshank Redemption",
-  overview: "Two imprisoned men bond over a number of years",
-  backdrop_path: "https://image.tmdb.org/t/p/w1280/test.jpg",
-  poster_path: "https://image.tmdb.org/t/p/w500/test.jpg",
-  original_title: "The Shawshank Redemption",
-  original_language: "en",
-  release_date: new Date("1994-09-23"),
-  duration: 8520,
-  currentViewTime: 4260,
-  genres: [
-    {
-      id: "18",
-      name: "Drama",
-    },
-    {
-      id: "80",
-      name: "Crime",
-    },
-  ],
+interface Content {
+  id: string;
+  media_type: string;
+  title: string;
+  overview: string;
+  backdrop_path: string;
+  poster_path: string;
+  original_title: string;
+  original_language: string;
+  release_date: string;
+  currentViewTime?: number;
+  duration?: number;
+  genres?: Genre[];
+}
+
+interface ContentList {
+  id: string;
+  title: string;
+  showProgress?: boolean;
+  contents: Content[];
+}
+
+interface MockData {
+  [key: string]: ContentList[];
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  plan: string;
+  memberSince: string;
+  avatar?: string;
+}
+
+export const mockUserData: User = {
+  id: "user-001",
+  name: "Emely Garcia",
+  email: "emely.garcia@example.com",
+  plan: "Premium",
+  memberSince: "22/12/2025",
 };
 
-export const mockContentResponse: IContentResponse = {
-  page: 1,
-  total_pages: 1,
-  total_results: 3,
-  results: [
-    {
-      id: "tt0111161",
-      media_type: "movie",
-      title: "The Shawshank Redemption",
-      overview:
-        "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-      backdrop_path:
-        "https://image.tmdb.org/t/p/w1280/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg",
-      poster_path:
-        "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
-      original_title: "The Shawshank Redemption",
-      original_language: "en",
-      release_date: new Date("1994-09-23"),
-      currentViewTime: 8520, // 2h 22m
-      duration: 8520,
-      genres: [
-        {
-          id: "18",
-          name: "Drama",
-        },
-        {
-          id: "80",
-          name: "Crime",
-        },
-      ],
-    },
-    {
-      id: "tt0468569",
-      media_type: "movie",
-      title: "The Dark Knight",
-      overview:
-        "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-      backdrop_path:
-        "https://image.tmdb.org/t/p/w1280/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg",
-      poster_path:
-        "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-      original_title: "The Dark Knight",
-      original_language: "en",
-      release_date: new Date("2008-07-18"),
-      currentViewTime: 4200, // 1h 10m
-      duration: 9120,
-    },
-    {
-      id: "tt0903747",
-      media_type: "tv",
-      title: "Breaking Bad",
-      overview:
-        "A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.",
-      backdrop_path:
-        "https://image.tmdb.org/t/p/w1280/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
-      poster_path:
-        "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-      original_title: "Breaking Bad",
-      original_language: "en",
-      release_date: new Date("2008-01-20"),
-      currentViewTime: 1800, // 30m
-      duration: 3600,
-    },
-  ],
-};
-
-export const mockContentLists: IContentListResponse = {
-  page: 1,
-  total_pages: 1,
-  total_results: 2,
-  results: [
+export const mockContentData: MockData = {
+  home: [
     {
       id: "CD1",
       title: "Continue Watching",
       showProgress: true,
-      contents: mockContentResponse.results,
+      contents: [
+        {
+          id: "tt0111161",
+          media_type: "movie",
+          title: "The Shawshank Redemption",
+          overview:
+            "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+          original_title: "The Shawshank Redemption",
+          original_language: "en",
+          release_date: "1994-09-23",
+          currentViewTime: 8520,
+          duration: 8520,
+          genres: [
+            { id: "18", name: "Drama" },
+            { id: "80", name: "Crime" },
+          ],
+        },
+        {
+          id: "tt0468569",
+          media_type: "movie",
+          title: "The Dark Knight",
+          overview:
+            "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+          original_title: "The Dark Knight",
+          original_language: "en",
+          release_date: "2008-07-18",
+          currentViewTime: 4200,
+          duration: 9120,
+        },
+        {
+          id: "tt0903747",
+          media_type: "tv",
+          title: "Breaking Bad",
+          overview:
+            "A high school chemistry teacher turned methamphetamine producer navigates the dangers of the criminal underworld.",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
+          original_title: "Breaking Bad",
+          original_language: "en",
+          release_date: "2008-01-20",
+          currentViewTime: 1800,
+          duration: 3600,
+        },
+      ],
     },
     {
       id: "CD2",
@@ -122,7 +124,7 @@ export const mockContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/6e7sf5Xz5L1Q9Ozr7XvY0Yt2rH6.jpg",
           original_title: "Dune: Part Two",
           original_language: "en",
-          release_date: new Date("2024-02-27"),
+          release_date: "2024-02-27",
           genres: [
             { id: "878", name: "Science Fiction" },
             { id: "12", name: "Adventure" },
@@ -141,7 +143,7 @@ export const mockContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9l1eZiJHmhr5jIlthMdJN5WYoff.jpg",
           original_title: "Deadpool & Wolverine",
           original_language: "en",
-          release_date: new Date("2024-07-24"),
+          release_date: "2024-07-24",
           genres: [
             { id: "28", name: "Action" },
             { id: "35", name: "Comedy" },
@@ -160,7 +162,7 @@ export const mockContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/1m1rXopfNDVL3UMiv6kriYaJ3yE.jpg",
           original_title: "Furiosa: A Mad Max Saga",
           original_language: "en",
-          release_date: new Date("2024-05-22"),
+          release_date: "2024-05-22",
           genres: [
             { id: "28", name: "Action" },
             { id: "12", name: "Adventure" },
@@ -179,7 +181,7 @@ export const mockContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/j3Z3XktmWB1VhsS8iXNcrR86PXi.jpg",
           original_title: "Godzilla x Kong: The New Empire",
           original_language: "en",
-          release_date: new Date("2024-03-27"),
+          release_date: "2024-03-27",
           genres: [
             { id: "28", name: "Action" },
             { id: "878", name: "Science Fiction" },
@@ -198,7 +200,7 @@ export const mockContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/2KGxQFV9Wp1MshPBf8BuqWUgVAz.jpg",
           original_title: "Kung Fu Panda 4",
           original_language: "en",
-          release_date: new Date("2024-03-02"),
+          release_date: "2024-03-02",
           genres: [
             { id: "16", name: "Animation" },
             { id: "10751", name: "Family" },
@@ -208,13 +210,7 @@ export const mockContentLists: IContentListResponse = {
       ],
     },
   ],
-};
-
-export const mockMoviesContentLists: IContentListResponse = {
-  page: 1,
-  total_pages: 1,
-  total_results: 2,
-  results: [
+  movies: [
     {
       id: "CD1",
       title: "Recommended for you",
@@ -232,7 +228,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/6e7sf5Xz5L1Q9Ozr7XvY0Yt2rH6.jpg",
           original_title: "Dune: Part Two",
           original_language: "en",
-          release_date: new Date("2024-02-27"),
+          release_date: "2024-02-27",
           currentViewTime: 4200,
           duration: 9300,
           genres: [
@@ -253,7 +249,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
           original_title: "Oppenheimer",
           original_language: "en",
-          release_date: new Date("2023-07-19"),
+          release_date: "2023-07-19",
           currentViewTime: 3000,
           duration: 10800,
           genres: [
@@ -274,7 +270,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/4HodYYKEIsGOdinkGi2Ucz6X9i0.jpg",
           original_title: "Spider-Man: Across the Spider-Verse",
           original_language: "en",
-          release_date: new Date("2023-05-31"),
+          release_date: "2023-05-31",
           currentViewTime: 900,
           duration: 8400,
           genres: [
@@ -295,7 +291,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/h8gHn0OzBoaefsYseUByqsmEDMY.jpg",
           original_title: "John Wick: Chapter 4",
           original_language: "en",
-          release_date: new Date("2023-03-22"),
+          release_date: "2023-03-22",
           currentViewTime: 2500,
           duration: 10140,
           genres: [
@@ -323,7 +319,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9l1eZiJHmhr5jIlthMdJN5WYoff.jpg",
           original_title: "Deadpool & Wolverine",
           original_language: "en",
-          release_date: new Date("2024-07-24"),
+          release_date: "2024-07-24",
           genres: [
             { id: "28", name: "Action" },
             { id: "35", name: "Comedy" },
@@ -342,7 +338,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/1m1rXopfNDVL3UMiv6kriYaJ3yE.jpg",
           original_title: "Furiosa: A Mad Max Saga",
           original_language: "en",
-          release_date: new Date("2024-05-22"),
+          release_date: "2024-05-22",
           genres: [
             { id: "28", name: "Action" },
             { id: "12", name: "Adventure" },
@@ -361,7 +357,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/j3Z3XktmWB1VhsS8iXNcrR86PXi.jpg",
           original_title: "Godzilla x Kong: The New Empire",
           original_language: "en",
-          release_date: new Date("2024-03-27"),
+          release_date: "2024-03-27",
           genres: [
             { id: "28", name: "Action" },
             { id: "878", name: "Science Fiction" },
@@ -380,7 +376,7 @@ export const mockMoviesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/2KGxQFV9Wp1MshPBf8BuqWUgVAz.jpg",
           original_title: "Kung Fu Panda 4",
           original_language: "en",
-          release_date: new Date("2024-03-02"),
+          release_date: "2024-03-02",
           genres: [
             { id: "16", name: "Animation" },
             { id: "10751", name: "Family" },
@@ -390,13 +386,7 @@ export const mockMoviesContentLists: IContentListResponse = {
       ],
     },
   ],
-};
-
-export const mockSeriesContentLists: IContentListResponse = {
-  page: 1,
-  total_pages: 1,
-  total_results: 2,
-  results: [
+  series: [
     {
       id: "SD1",
       title: "Recommended Series For You",
@@ -414,7 +404,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
           original_title: "Breaking Bad",
           original_language: "en",
-          release_date: new Date("2008-01-20"),
+          release_date: "2008-01-20",
           currentViewTime: 2100,
           duration: 3600,
           genres: [
@@ -435,7 +425,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9ijMGlJKqcslswWUzTEwScm82Gs.jpg",
           original_title: "The Mandalorian",
           original_language: "en",
-          release_date: new Date("2019-11-12"),
+          release_date: "2019-11-12",
           currentViewTime: 900,
           duration: 2700,
           genres: [
@@ -456,7 +446,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/56v2KjBlU4XaOv9rVYEQypROD7P.jpg",
           original_title: "Stranger Things",
           original_language: "en",
-          release_date: new Date("2016-07-15"),
+          release_date: "2016-07-15",
           currentViewTime: 1500,
           duration: 3300,
           genres: [
@@ -477,7 +467,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/7QMsOTMUswlwxJP0rTTZfmz2tX2.jpg",
           original_title: "House of the Dragon",
           original_language: "en",
-          release_date: new Date("2022-08-21"),
+          release_date: "2022-08-21",
           currentViewTime: 600,
           duration: 3600,
           genres: [
@@ -498,7 +488,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/8kOWDBK6XlPUzckuHDo3wwVRFwt.jpg",
           original_title: "Rick and Morty",
           original_language: "en",
-          release_date: new Date("2013-12-02"),
+          release_date: "2013-12-02",
           currentViewTime: 1200,
           duration: 1320,
           genres: [
@@ -526,7 +516,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9ijMGlJKqcslswWUzTEwScm82Gs.jpg",
           original_title: "The Office",
           original_language: "en",
-          release_date: new Date("2005-03-24"),
+          release_date: "2005-03-24",
           genres: [{ id: "35", name: "Comedy" }],
         },
         {
@@ -541,7 +531,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/7Ns6tO3aYjppI5j8IuSxkN9zH1N.jpg",
           original_title: "The Boys",
           original_language: "en",
-          release_date: new Date("2019-07-25"),
+          release_date: "2019-07-25",
           genres: [
             { id: "10765", name: "Sci-Fi & Fantasy" },
             { id: "10759", name: "Action & Adventure" },
@@ -560,7 +550,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/6Xf6h0q4tU9Yb8jvR9jM7G7Q5mB.jpg",
           original_title: "Arcane",
           original_language: "en",
-          release_date: new Date("2021-11-06"),
+          release_date: "2021-11-06",
           genres: [
             { id: "16", name: "Animation" },
             { id: "18", name: "Drama" },
@@ -579,7 +569,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/qjGrUmKW78MCFG8PTLDBp67S27p.jpg",
           original_title: "오징어 게임",
           original_language: "ko",
-          release_date: new Date("2021-09-17"),
+          release_date: "2021-09-17",
           genres: [
             { id: "18", name: "Drama" },
             { id: "9648", name: "Mystery" },
@@ -598,7 +588,7 @@ export const mockSeriesContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/ctxm191q5o3axFzQsvNPlbKoSYv.jpg",
           original_title: "Peacemaker",
           original_language: "en",
-          release_date: new Date("2022-01-13"),
+          release_date: "2022-01-13",
           genres: [
             { id: "10759", name: "Action & Adventure" },
             { id: "35", name: "Comedy" },
@@ -608,13 +598,7 @@ export const mockSeriesContentLists: IContentListResponse = {
       ],
     },
   ],
-};
-
-export const mockKidsContentLists: IContentListResponse = {
-  page: 1,
-  total_pages: 1,
-  total_results: 2,
-  results: [
+  kids: [
     {
       id: "KD1",
       title: "Kids Favorites",
@@ -632,7 +616,7 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/5m8yYy5Yy7k3tVZzYpUeZ7k7k3K.jpg",
           original_title: "Bluey",
           original_language: "en",
-          release_date: new Date("2018-10-01"),
+          release_date: "2018-10-01",
           currentViewTime: 420,
           duration: 480,
           genres: [
@@ -653,7 +637,7 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/2ZkKX5nZK5p9Z5FZ7p8F9Z5KZK.jpg",
           original_title: "PAW Patrol",
           original_language: "en",
-          release_date: new Date("2013-08-12"),
+          release_date: "2013-08-12",
           currentViewTime: 300,
           duration: 660,
           genres: [
@@ -674,7 +658,7 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/3GZ5tZKZ5Z5Z5F5ZK5ZK5ZK5Z.jpg",
           original_title: "SpongeBob SquarePants",
           original_language: "en",
-          release_date: new Date("1999-05-01"),
+          release_date: "1999-05-01",
           currentViewTime: 600,
           duration: 660,
           genres: [
@@ -702,7 +686,7 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
           original_title: "Avatar: The Last Airbender",
           original_language: "en",
-          release_date: new Date("2005-02-21"),
+          release_date: "2005-02-21",
           genres: [
             { id: "16", name: "Animation" },
             { id: "10759", name: "Action & Adventure" },
@@ -721,7 +705,7 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
           original_title: "Teenage Mutant Ninja Turtles",
           original_language: "en",
-          release_date: new Date("2012-09-29"),
+          release_date: "2012-09-29",
           genres: [
             { id: "16", name: "Animation" },
             { id: "10759", name: "Action & Adventure" },
@@ -740,30 +724,97 @@ export const mockKidsContentLists: IContentListResponse = {
             "https://image.tmdb.org/t/p/w1280/9f5ZgZ5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
           original_title: "ポケットモンスター",
           original_language: "ja",
-          release_date: new Date("1997-04-01"),
+          release_date: "1997-04-01",
           genres: [
             { id: "16", name: "Animation" },
             { id: "10759", name: "Action & Adventure" },
             { id: "10762", name: "Kids" },
           ],
         },
+        {
+          id: "60572",
+          media_type: "tv",
+          title: "Adventure Time",
+          overview:
+            "A young boy and his best friend, a wise dog with magical powers, embark on surreal adventures in a whimsical post-apocalyptic land.",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/qk3eQ8jW4opJ48gFWYUXWaMT4l.jpg",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/4Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          original_title: "Adventure Time",
+          original_language: "en",
+          release_date: "2010-04-05",
+          genres: [
+            { id: "16", name: "Animation" },
+            { id: "35", name: "Comedy" },
+            { id: "10765", name: "Sci-Fi & Fantasy" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "KD3",
+      title: "Educational & Learning",
+      showProgress: false,
+      contents: [
+        {
+          id: "1416",
+          media_type: "tv",
+          title: "Sesame Street",
+          overview:
+            "An educational program featuring beloved characters helping children learn letters, numbers, and life lessons through songs and skits.",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/2Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/8Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          original_title: "Sesame Street",
+          original_language: "en",
+          release_date: "1969-11-10",
+          genres: [
+            { id: "10762", name: "Kids" },
+            { id: "10751", name: "Family" },
+            { id: "35", name: "Comedy" },
+          ],
+        },
+        {
+          id: "82198",
+          media_type: "tv",
+          title: "Dora the Explorer",
+          overview:
+            "Join Dora and her monkey friend Boots on interactive adventures that teach problem-solving, Spanish vocabulary, and cultural awareness.",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/3Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/1Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          original_title: "Dora the Explorer",
+          original_language: "en",
+          release_date: "2000-08-14",
+          genres: [
+            { id: "16", name: "Animation" },
+            { id: "10762", name: "Kids" },
+            { id: "10751", name: "Family" },
+          ],
+        },
+        {
+          id: "37591",
+          media_type: "tv",
+          title: "Wild Kratts",
+          overview:
+            "Brothers Chris and Martin Kratt use creature power suits to explore the animal kingdom and learn about wildlife conservation.",
+          poster_path:
+            "https://image.tmdb.org/t/p/w500/6Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          backdrop_path:
+            "https://image.tmdb.org/t/p/w1280/5K5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z5Z.jpg",
+          original_title: "Wild Kratts",
+          original_language: "en",
+          release_date: "2011-01-03",
+          genres: [
+            { id: "16", name: "Animation" },
+            { id: "10762", name: "Kids" },
+            { id: "10751", name: "Family" },
+          ],
+        },
       ],
     },
   ],
-};
-
-export const getMockContentList = async (
-  tab: string
-): Promise<IContentListResponse> => {
-  // Simulate an API call to fetch content by ID
-  if (tab.toLowerCase() === "movies") {
-    return Promise.resolve(mockMoviesContentLists);
-  }
-  if (tab.toLowerCase() === "series") {
-    return Promise.resolve(mockSeriesContentLists);
-  }
-  if (tab.toLowerCase() === "kids") {
-    return Promise.resolve(mockKidsContentLists);
-  }
-  return Promise.resolve(mockContentLists);
 };

@@ -1,5 +1,5 @@
 import styles from "./ContentDesc.module.scss";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import type { IContent } from "@/models/content";
 
 interface ContentDescriptionProps {
@@ -15,8 +15,18 @@ export const ContentDescription: React.FC<ContentDescriptionProps> = memo(
       setImageUrl(content?.poster_path);
     }, [content]);
 
+    const releaseYear = useMemo(() => {
+      if (content?.release_date) {
+       try {
+          return new Date(content.release_date).getFullYear();
+       } catch {
+          return null;
+       }
+      }
+    }, [content]);
+
     return (
-      <div className={`${styles.content} ${isExiting ? styles.exiting : ''}`}>
+      <div className={`${styles.content} ${isExiting ? styles.exiting : ""}`}>
         {imageUrl && (
           <img
             src={imageUrl}
@@ -30,11 +40,7 @@ export const ContentDescription: React.FC<ContentDescriptionProps> = memo(
           <h2 className={styles.title}>{content?.title}</h2>
           <p className={styles.description}>{content?.overview}</p>
           <div className={styles.pillContainer}>
-            {content?.release_date && (
-              <p className={styles.pill}>
-                {content?.release_date.getFullYear()}
-              </p>
-            )}
+            {releaseYear && <p className={styles.pill}>{releaseYear}</p>}
             {content?.genres &&
               content.genres.length > 0 &&
               content.genres.map((genre) => (

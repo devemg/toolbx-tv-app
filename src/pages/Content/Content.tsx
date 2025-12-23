@@ -3,7 +3,7 @@ import styles from "./Content.module.scss";
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router";
 import { useContent } from "@/contexts";
-import { getContentList } from "@/queries/content.api";
+import { getContentList } from "@/queries/api/content.api";
 
 export const ContentPage = () => {
   const params = useParams();
@@ -11,6 +11,7 @@ export const ContentPage = () => {
     useContent();
   const [displayContent, setDisplayContent] = useState(selectedContent);
   const [isExiting, setIsExiting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (selectedContent) {
@@ -32,27 +33,36 @@ export const ContentPage = () => {
 
   const setContent = useCallback(async (tab: string = "home") => {
     try {
+      setIsLoading(true);
       const content = await getContentList(tab);
       setContentList(content);
       setSelectedTab(tab);
     } catch (error) {
       console.error("Error setting content:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [setContentList, setSelectedTab]);
 
   return (
     <div className="app-page">
       <Header />
-      <div className={styles.pageView}>
-        <div className={styles.cardLists}>
-          {contentList.map((contentGroup) => (
-            <CardList key={contentGroup.id} ratio="16x9" {...contentGroup} />
-          ))}
+      {isLoading ? (
+        <div className="loading">
+          <div className="spinner" aria-label="loading"></div>
         </div>
-        {displayContent && (
-          <ContentDescription content={displayContent} isExiting={isExiting} />
-        )}
-      </div>
+      ) : (
+        <div className={styles.pageView}>
+          <div className={styles.cardLists}>
+            {contentList.map((contentGroup) => (
+              <CardList key={contentGroup.id} ratio="16x9" {...contentGroup} />
+            ))}
+          </div>
+          {displayContent && (
+            <ContentDescription content={displayContent} isExiting={isExiting} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
